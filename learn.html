@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Emergency Skills | Smart Emergency Response</title>
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <button class="back-btn" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+
+    <div class="learn-container">
+        <h2 style="text-align: center; margin-bottom: 30px; color: #64b5f6;">
+            <i class="fas fa-graduation-cap"></i> Emergency Skills Training
+        </h2>
+
+        <!-- CPR Card -->
+        <div class="skill-card">
+            <div class="skill-header">
+                <i class="fas fa-heart"></i>
+                <h3>CPR (Cardiopulmonary Resuscitation)</h3>
+            </div>
+            <div class="skill-content">
+                <p>
+                    CPR is an emergency procedure performed when someone's breathing or heartbeat has stopped. 
+                    It combines chest compressions and rescue breaths to maintain circulation and oxygenation.
+                </p>
+                
+                <h4 style="color: #64b5f6; margin-bottom: 15px;">Step-by-Step Guide:</h4>
+                <ol class="skill-steps">
+                    <li data-step="1">Check the person's responsiveness by tapping their shoulders and asking "Are you okay?"</li>
+                    <li data-step="2">Call emergency services (112) or ask someone to call while you begin CPR</li>
+                    <li data-step="3">Place the person on their back on a firm surface</li>
+                    <li data-step="4">Kneel beside the person's chest and place the heel of one hand on the center of their chest (lower half of sternum)</li>
+                    <li data-step="5">Place your other hand on top of the first hand, interlock your fingers</li>
+                    <li data-step="6">Push hard and fast - at least 2 inches deep at a rate of 100-120 compressions per minute</li>
+                    <li data-step="7">After 30 compressions, give 2 rescue breaths (if trained)</li>
+                    <li data-step="8">Continue cycles of 30 compressions and 2 breaths until help arrives</li>
+                </ol>
+
+                <div class="video-placeholder" onclick="openVideo('cpr')">
+                    <i class="fas fa-play-circle"></i>
+                    <h4>Watch CPR Demonstration Video</h4>
+                    <p>Click to play step-by-step CPR tutorial</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Heimlich Maneuver Card -->
+        <div class="skill-card">
+            <div class="skill-header">
+                <i class="fas fa-user-injured"></i>
+                <h3>Choking - Heimlich Maneuver</h3>
+            </div>
+            <div class="skill-content">
+                <p>
+                    The Heimlich maneuver is a first aid procedure used to treat upper airway obstructions 
+                    (choking) by foreign objects. It's crucial for saving lives during choking incidents.
+                </p>
+                
+                <h4 style="color: #64b5f6; margin-bottom: 15px;">Step-by-Step Guide:</h4>
+                <ol class="skill-steps">
+                    <li data-step="1">Ask the person "Are you choking?" If they can't speak or cough, proceed</li>
+                    <li data-step="2">Stand behind the person and wrap your arms around their waist</li>
+                    <li data-step="3">Make a fist with one hand and place it just above their navel</li>
+                    <li data-step="4">Grasp your fist with your other hand</li>
+                    <li data-step="5">Perform quick, upward and inward thrusts</li>
+                    <li data-step="6">Repeat thrusts until the object is expelled or the person becomes unconscious</li>
+                    <li data-step="7">If unconscious, lay them down and begin CPR</li>
+                </ol>
+
+                <div class="video-placeholder" onclick="openVideo('heimlich')">
+                    <i class="fas fa-play-circle"></i>
+                    <h4>Watch Heimlich Maneuver Video</h4>
+                    <p>Click to see proper technique demonstration</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- First Aid Card -->
+        <div class="skill-card">
+            <div class="skill-header">
+                <i class="fas fa-first-aid"></i>
+                <h3>Basic First Aid</h3>
+            </div>
+            <div class="skill-content">
+                <p>
+                    Basic first aid skills are essential for treating minor injuries and stabilizing victims 
+                    until professional help arrives. Knowing these techniques can save lives.
+                </p>
+                
+                <h4 style="color: #64b5f6; margin-bottom: 15px;">Essential First Aid Steps:</h4>
+                <ol class="skill-steps">
+                    <li data-step="1">Ensure safety - Check the scene for dangers before approaching</li>
+                    <li data-step="2">Assess consciousness - Check if the person is responsive</li>
+                    <li data-step="3">Call for help - Dial 112 or ask someone to call</li>
+                    <li data-step="4">Check breathing and pulse</li>
+                    <li data-step="5">Position the person appropriately based on their condition</li>
+                    <li data-step="6">Control bleeding with direct pressure</li>
+                    <li data-step="7">Treat for shock - Keep them warm and calm</li>
+                    <li data-step="8">Monitor vital signs until help arrives</li>
+                </ol>
+
+                <div class="video-placeholder" onclick="openVideo('firstaid')">
+                    <i class="fas fa-play-circle"></i>
+                    <h4>Watch First Aid Tutorial</h4>
+                    <p>Click for comprehensive first aid guide</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Burns Card -->
+        <div class="skill-card">
+            <div class="skill-header">
+                <i class="fas fa-fire"></i>
+                <h3>Burn Treatment</h3>
+            </div>
+            <div class="skill-content">
+                <p>
+                    Burns require immediate first aid to prevent further tissue damage and reduce pain. 
+                    Proper initial treatment can significantly improve healing outcomes.
+                </p>
+                
+                <h4 style="color: #64b5f6; margin-bottom: 15px;">Step-by-Step Guide:</h4>
+                <ol class="skill-steps">
+                    <li data-step="1">Remove the person from the source of the burn</li>
+                    <li data-step="2">Cool the burn under cool (not cold) running water for at least 10-20 minutes</li>
+                    <li data-step="3">Remove any jewelry, watches, or tight clothing near the burned area</li>
+                    <li data-step="4">Do NOT apply ice, butter, or toothpaste to burns</li>
+                    <li data-step="5">Cover the burn with a sterile, non-stick bandage or clean cloth</li>
+                    <li data-step="6">Take over-the-counter pain relievers if needed</li>
+                    <li data-step="7">Seek medical attention for severe burns (blistering, large area, face, hands, feet)</li>
+                </ol>
+
+                <div class="video-placeholder" onclick="openVideo('burns')">
+                    <i class="fas fa-play-circle"></i>
+                    <h4>Watch Burn Treatment Video</h4>
+                    <p>Click for proper burn first aid demonstration</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bleeding Card -->
+        <div class="skill-card">
+            <div class="skill-header">
+                <i class="fas fa-tint"></i>
+                <h3>Controlling Bleeding</h3>
+            </div>
+            <div class="skill-content">
+                <p>
+                    Controlling severe bleeding is crucial in emergencies. Acting quickly can prevent 
+                    shock and save lives. Always use personal protective equipment when available.
+                </p>
+                
+                <h4 style="color: #64b5f6; margin-bottom: 15px;">Step-by-Step Guide:</h4>
+                <ol class="skill-steps">
+                    <li data-step="1">Protect yourself - Use gloves if available</li>
+                    <li data-step="2">Apply direct pressure to the wound using a clean cloth or bandage</li>
+                    <li data-step="3">Maintain pressure for at least 10-15 minutes without checking</li>
+                    <li data-step="4">If blood soaks through, add more layers - do NOT remove the first one</li>
+                    <li data-step="5">Elevate the injured area above heart level if possible</li>
+                    <li data-step="6">Apply a tourniquet only as a last resort for life-threatening bleeding</li>
+                    <li data-step="7">Monitor for signs of shock and keep the person calm</li>
+                </ol>
+
+                <div class="video-placeholder" onclick="openVideo('bleeding')">
+                    <i class="fas fa-play-circle"></i>
+                    <h4>Watch Bleeding Control Video</h4>
+                    <p>Click for proper bleeding control techniques</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="integration-banner">
+            <img src="https://www.112india.gov.in/images/logo.png" alt="112 India">
+            <div>
+                <h4>112 Emergency Services</h4>
+                <p>Call 112 immediately for any life-threatening emergency</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function openVideo(topic) {
+            alert(`Opening ${topic} video tutorial...\n\nIn production, this would open a video player with educational content.`);
+        }
+    </script>
+</body>
+</html>

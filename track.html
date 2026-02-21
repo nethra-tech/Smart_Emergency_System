@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Me | Smart Emergency Response</title>
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <button class="back-btn" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+
+    <div class="track-container">
+        <div class="track-status">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>Your Location is Being Shared</h3>
+            <p>Live tracking is active. Emergency contacts can see your location.</p>
+        </div>
+
+        <div class="track-map" id="trackMap"></div>
+
+        <div class="info-card">
+            <h4><i class="fas fa-info-circle"></i> Tracking Information</h4>
+            <p><strong>Status:</strong> <span style="color: #43a047;">Live</span></p>
+            <p><strong>Last Updated:</strong> <span id="lastUpdated">Just now</span></p>
+            <p><strong>Accuracy:</strong> <span id="accuracy">Calculating...</span></p>
+        </div>
+
+        <div class="share-options">
+            <button class="quick-action-btn" onclick="shareViaSMS()">
+                <i class="fas fa-sms"></i> SMS Link
+            </button>
+            <button class="quick-action-btn" onclick="copyLink()">
+                <i class="fas fa-link"></i> Copy Link
+            </button>
+            <button class="quick-action-btn" onclick="stopTracking()">
+                <i class="fas fa-stop"></i> Stop Sharing
+            </button>
+        </div>
+
+        <div class="integration-banner">
+            <img src="https://www.112india.gov.in/images/logo.png" alt="112 India">
+            <div>
+                <h4>112 Emergency Service</h4>
+                <p>Your location is also shared with 112 India</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let trackMap;
+        let trackingInterval;
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function initTracking() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const accuracy = position.coords.accuracy;
+
+                        // Update accuracy display
+                        document.getElementById('accuracy').textContent = 
+                            accuracy < 100 ? 'High (' + Math.round(accuracy) + 'm)' : 'Normal';
+
+                        // Update last updated time
+                        updateLastUpdated();
+
+                        // Initialize map
+                        initMap(lat, lng);
+
+                        // Start live tracking
+                        startLiveTracking();
+                    },
+                    error => {
+                        // Use default location
+                        initMap(8.7139, 77.7567);
+                        document.getElementById('accuracy').textContent = 'Default Location';
+                    }
+                );
+            }
+        }
+
+        function initMap(lat, lng) {
+            trackMap = L.map('trackMap').setView([lat, lng], 15);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(trackMap);
+
+            L.marker([lat, lng]).addTo(trackMap)
+                .bindPopup('Your Current Location').openPopup();
+
+            // Add accuracy circle
+            L.circle([lat, lng], {
+                color: '#1e88e5',
+                fillColor: '#1e88e5',
+                fillOpacity: 0.2,
+                radius: 100
+            }).addTo(trackMap);
+        }
+
+        function startLiveTracking() {
+            trackingInterval = setInterval(() => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(position => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+
+                        // Update map
+                        trackMap.setView([lat, lng]);
+                        
+                        // Update marker
+                        L.marker([lat, lng]).addTo(trackMap)
+                            .bindPopup('Your Location').openPopup();
+
+                        // Update timestamp
+                        updateLastUpdated();
+                    });
+                }
+            }, 10000); // Update every 10 seconds
+        }
+
+        function updateLastUpdated() {
+            const now = new Date();
+            document.getElementById('lastUpdated').textContent = 
+                now.toLocaleTimeString();
+        }
+
+        function shareViaSMS() {
+            alert('SMS with location link will be sent to your emergency contacts!');
+        }
+
+        function copyLink() {
+            const link = window.location.href + '?location=shared';
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Location link copied to clipboard!');
+            });
+        }
+
+        function stopTracking() {
+            if (confirm('Are you sure you want to stop sharing your location?')) {
+                clearInterval(trackingInterval);
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        // Initialize on load
+        initTracking();
+
+        // Handle offline status
+        window.addEventListener('offline', () => {
+            document.getElementById('lastUpdated').innerHTML = 
+                '<span style="color: #fb8c00;">Offline - Using cached location</span>';
+        });
+    </script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</body>
+</html>

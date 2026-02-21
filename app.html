@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Emergency Response System</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="card-ui">
+
+      <h1 class="logo">112<span>+</span></h1>
+      <p class="tagline">Your safety, one tap away</p>
+
+      <!-- Emergency Card -->
+      <div class="action-card emergency" onclick="goEmergency()">
+        🚨
+        <h2>Emergency Help</h2>
+        <p>Immediate assistance</p>
+      </div>
+
+      <!-- Login Card -->
+      <div class="action-card login" onclick="goLogin()">
+        👤
+        <h2>Login</h2>
+        <p>Access your account</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function goEmergency() {
+      window.location.href = "emergency.html";
+    }
+
+    function goLogin() {
+      window.location.href = "login.html";
+    }
+  </script>
+
+</body>
+</html>

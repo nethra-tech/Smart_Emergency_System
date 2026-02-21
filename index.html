@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Emergency Response System</title>
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- Logo and Title Section -->
+        <div class="logo-section">
+            <div class="logo-icon">
+                <i class="fas fa-ambulance"></i>
+            </div>
+            <h1 class="main-title">Smart Emergency Response</h1>
+            <p class="main-subtitle">Your safety, one tap away</p>
+        </div>
+
+        <!-- Button Section -->
+        <div class="button-section">
+            <!-- Emergency Button -->
+            <div style="text-align: center;">
+                <button class="action-button emergency-btn" onclick="goToEmergency()">
+                    <div class="icon-container">
+                        <i class="fas fa-ambulance"></i>
+                        <span>Emergency</span>
+                    </div>
+                </button>
+                <div class="button-label">
+                    <span class="emergency-btn-label">Tap for immediate help</span>
+                </div>
+            </div>
+
+            <!-- Login Button -->
+            <div style="text-align: center;">
+                <button class="action-button login-btn" onclick="goToLogin()">
+                    <div class="icon-container">
+                        <i class="fas fa-user"></i>
+                        <span>Login</span>
+                    </div>
+                </button>
+                <div class="button-label">
+                    <span class="login-btn-label">Access your account</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reference Banner -->
+        <div class="reference-banner">
+            <img src="https://www.112india.gov.in/images/logo.png" alt="112 India">
+            <span>Integrated with Emergency Response</span>
+        </div>
+    </div>
+
+    <script>
+        function goToEmergency() {
+            window.location.href = 'emergency.html';
+        }
+
+        function goToLogin() {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Smart Emergency Response</title>
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <button class="back-btn" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div class="logo-icon" style="width: 80px; height: 80px; margin: 0 auto 15px;">
+                    <i class="fas fa-shield-alt" style="font-size: 35px;"></i>
+                </div>
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Verify your phone number to continue</p>
+            </div>
+
+            <!-- Step 1: Phone Number -->
+            <div id="phoneStep">
+                <div class="input-group">
+                    <label><i class="fas fa-phone-alt"></i> Mobile Number</label>
+                    <div class="input-field">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="phoneNumber" placeholder="+91 XXXXXXXXXX" maxlength="10" oninput="validatePhone(this)">
+                    </div>
+                </div>
+
+                <button class="login-submit-btn" onclick="sendOTP()">
+                    <i class="fas fa-paper-plane"></i> Send OTP
+                </button>
+            </div>
+
+            <!-- Step 2: OTP -->
+            <div id="otpStep" style="display: none;">
+                <div class="input-group">
+                    <label><i class="fas fa-key"></i> Enter OTP</label>
+                    <p style="font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 15px;">
+                        Enter the 6-digit OTP sent to <span id="displayPhone" style="color: #64b5f6; font-weight: 600;"></span>
+                    </p>
+                    
+                    <div class="otp-container">
+                        <input type="text" class="otp-input" maxlength="1" onkeyup="moveToNext(this, 'otp2')" id="otp1">
+                        <input type="text" class="otp-input" id="otp2" maxlength="1" onkeyup="moveToNext(this, 'otp3')">
+                        <input type="text" class="otp-input" id="otp3" maxlength="1" onkeyup="moveToNext(this, 'otp4')">
+                        <input type="text" class="otp-input" id="otp4" maxlength="1" onkeyup="moveToNext(this, 'otp5')">
+                        <input type="text" class="otp-input" id="otp5" maxlength="1" onkeyup="moveToNext(this, 'otp6')">
+                        <input type="text" class="otp-input" id="otp6" maxlength="1">
+                    </div>
+                </div>
+
+                <button class="login-submit-btn" onclick="verifyOTP()">
+                    <i class="fas fa-check-circle"></i> Verify & Login
+                </button>
+
+                <div class="resend-link">
+                    <p style="color: rgba(255,255,255,0.5); font-size: 13px;">
+                        Didn't receive OTP? 
+                        <span id="timer" style="color: #fb8c00;"></span>
+                    </p>
+                    <button id="resendBtn" onclick="resendOTP()" disabled style="margin-top: 10px; background: none; border: none; color: #1e88e5; cursor: pointer; font-size: 14px;">
+                        <i class="fas fa-redo"></i> Resend New OTP
+                    </button>
+                </div>
+            </div>
+
+            <div class="emergency-link">
+                <i class="fas fa-exclamation-circle" style="color: #e53935;"></i>
+                Emergency? <a href="emergency.html">Click here for immediate help</a>
+            </div>
+
+            <div class="integration-banner">
+                <img src="https://www.112india.gov.in/images/logo.png" alt="112 India">
+                <div>
+                    <h4>Secured by 112 India</h4>
+                    <p>Your data is securely protected</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPhone = '';
+        let otpTimer = null;
+        let countdown = 30;
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        function validatePhone(input) {
+            input.value = input.value.replace(/[^0-9]/g, '');
+        }
+
+        function sendOTP() {
+            const phone = document.getElementById('phoneNumber').value;
+            
+            if (phone.length !== 10) {
+                alert('Please enter a valid 10-digit phone number!');
+                return;
+            }
+
+            currentPhone = phone;
+
+            // Show OTP step
+            document.getElementById('phoneStep').style.display = 'none';
+            document.getElementById('otpStep').style.display = 'block';
+            document.getElementById('displayPhone').textContent = '+91 ' + phone;
+
+            // Generate and show demo OTP
+            const otp = Math.floor(100000 + Math.random() * 900000);
+            console.log('OTP:', otp);
+            
+            // For demo purposes, auto-fill OTP after 1 second
+            setTimeout(() => {
+                document.getElementById('otp1').value = otp.toString()[0];
+                document.getElementById('otp2').value = otp.toString()[1];
+                document.getElementById('otp3').value = otp.toString()[2];
+                document.getElementById('otp4').value = otp.toString()[3];
+                document.getElementById('otp5').value = otp.toString()[4];
+                document.getElementById('otp6').value = otp.toString()[5];
+                alert(`Demo OTP: ${otp}`);
+            }, 1000);
+
+            // Start resend timer
+            startResendTimer();
+        }
+
+        function moveToNext(current, nextId) {
+            if (current.value.length === 1) {
+                document.getElementById(nextId).focus();
+            }
+        }
+
+        function verifyOTP() {
+            const otp = 
+                document.getElementById('otp1').value +
+                document.getElementById('otp2').value +
+                document.getElementById('otp3').value +
+                document.getElementById('otp4').value +
+                document.getElementById('otp5').value +
+                document.getElementById('otp6').value;
+
+            if (otp.length === 6) {
+                // Store phone in localStorage
+                localStorage.setItem('userPhone', '+91 ' + currentPhone);
+                
+                // Show success message
+                alert('Login successful! Redirecting to dashboard...');
+                
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Please enter the complete 6-digit OTP!');
+            }
+        }
+
+        function startResendTimer() {
+            const resendBtn = document.getElementById('resendBtn');
+            const timerDisplay = document.getElementById('timer');
+            
+            countdown = 30;
+            resendBtn.disabled = true;
+            resendBtn.style.opacity = '0.5';
+            resendBtn.style.cursor = 'not-allowed';
+
+            otpTimer = setInterval(() => {
+                countdown--;
+                timerDisplay.textContent = `Wait ${countdown}s`;
+                
+                if (countdown <= 0) {
+                    clearInterval(otpTimer);
+                    timerDisplay.textContent = '';
+                    resendBtn.disabled = false;
+                    resendBtn.style.opacity = '1';
+                    resendBtn.style.cursor = 'pointer';
+                }
+            }, 1000);
+        }
+
+        function resendOTP() {
+            // Generate new OTP
+            const newOtp = Math.floor(100000 + Math.random() * 900000);
+            console.log('New OTP:', newOtp);
+            
+            // Clear old OTP fields
+            document.getElementById('otp1').value = '';
+            document.getElementById('otp2').value = '';
+            document.getElementById('otp3').value = '';
+            document.getElementById('otp4').value = '';
+            document.getElementById('otp5').value = '';
+            document.getElementById('otp6').value = '';
+            document.getElementById('otp1').focus();
+
+            // Show new OTP
+            alert(`New OTP sent: ${newOtp}`);
+            
+            // Restart timer
+            startResendTimer();
+        }
+
+        // Focus on first OTP input on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('phoneNumber').focus();
+        });
+    </script>
+</body>
+</html>

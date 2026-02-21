@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Smart Emergency Response</title>
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <button class="back-btn" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <h2 id="userName">John Doe</h2>
+            <p style="color: rgba(255,255,255,0.6);" id="userPhone">+91 9876543210</p>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="profile-section">
+            <h3><i class="fas fa-user-circle"></i> Personal Information</h3>
+            <div class="profile-field">
+                <span class="label">Full Name</span>
+                <span class="value" id="displayName">John Doe</span>
+            </div>
+            <div class="profile-field">
+                <span class="label">Date of Birth</span>
+                <span class="value">15/03/1990</span>
+            </div>
+            <div class="profile-field">
+                <span class="label">Gender</span>
+                <span class="value">Male</span>
+            </div>
+            <div class="profile-field">
+                <span class="label">Address</span>
+                <span class="value">123 Main Street, City - 627001</span>
+            </div>
+        </div>
+
+        <!-- Medical Information -->
+        <div class="profile-section">
+            <h3><i class="fas fa-heartbeat"></i> Medical Information</h3>
+            <div class="profile-field">
+                <span class="label">Blood Group</span>
+                <span class="value" style="color: #e53935;">O+</span>
+            </div>
+            <div class="profile-field">
+                <span class="label">Height</span>
+                <span class="value">175 cm</span>
+            </div>
+            <div class="profile-field">
+                <span class="label">Weight</span>
+                <span class="value">70 kg</span>
+            </div>
+            <div class="profile-field">
+                <span class="label">Allergies</span>
+                <span class="value" style="color: #fb8c00;">Penicillin, Dust</span>
+            </div>
+            <div class="profile-field">
+                <span class="label">Medical Conditions</span>
+                <span class="value" style="color: #fb8c00;">Asthma</span>
+            </div>
+            <div class="profile-field">
+                <span class="label">Current Medications</span>
+                <span class="value">Inhaler (as needed)</span>
+            </div>
+        </div>
+
+        <!-- Emergency Contacts -->
+        <div class="profile-section">
+            <h3><i class="fas fa-phone-alt"></i> Emergency Contacts</h3>
+            
+            <div class="contact-item" style="margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; flex: 1;">
+                    <div style="width: 45px; height: 45px; background: linear-gradient(145deg, #1e88e5, #1565c0); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-mother" style="color: white;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600;">Mother</div>
+                        <div style="font-size: 13px; color: rgba(255,255,255,0.6);">+91 9876543211</div>
+                    </div>
+                </div>
+                <span class="number" style="font-size: 14px;">Primary</span>
+            </div>
+
+            <div class="contact-item">
+                <div style="display: flex; align-items: center; flex: 1;">
+                    <div style="width: 45px; height: 45px; background: linear-gradient(145deg, #43a047, #2e7d32); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                        <i class="fas fa-user-friends" style="color: white;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600;">Father</div>
+                        <div style="font-size: 13px; color: rgba(255,255,255,0.6);">+91 9876543212</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="quick-action-btn" style="margin-top: 15px; width: 100%;" onclick="editContacts()">
+                <i class="fas fa-edit"></i> Edit Contacts
+            </button>
+        </div>
+
+        <!-- Medical Documents -->
+        <div class="profile-section">
+            <h3><i class="fas fa-file-medical"></i> Medical Documents</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button class="quick-action-btn">
+                    <i class="fas fa-file-medical-alt"></i> Insurance Card
+                </button>
+                <button class="quick-action-btn">
+                    <i class="fas fa-file-prescription"></i> Prescription
+                </button>
+                <button class="quick-action-btn">
+                    <i class="fas fa-file-contract"></i> Medical Reports
+                </button>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="profile-section">
+            <h3><i class="fas fa-cog"></i> Settings</h3>
+            <div class="profile-field" style="cursor: pointer;" onclick="toggleSetting('notifications')">
+                <span class="label"><i class="fas fa-bell"></i> Notifications</span>
+                <span class="value"><i class="fas fa-toggle-on" style="color: #43a047;"></i></span>
+            </div>
+            <div class="profile-field" style="cursor: pointer;" onclick="toggleSetting('location')">
+                <span class="label"><i class="fas fa-map-marker-alt"></i> Location Sharing</span>
+                <span class="value"><i class="fas fa-toggle-on" style="color: #43a047;"></i></span>
+            </div>
+            <div class="profile-field" style="cursor: pointer;" onclick="toggleSetting('sos')">
+                <span class="label"><i class="fas fa-bell"></i> Auto SOS</span>
+                <span class="value"><i class="fas fa-toggle-off" style="color: #e53935;"></i></span>
+            </div>
+        </div>
+
+        <button class="submit-emergency-btn" style="margin-top: 20px;" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+
+        <div class="integration-banner">
+            <img src="https://www.112india.gov.in/images/logo.png" alt="112 India">
+            <div>
+                <h4>112 Emergency Service</h4>
+                <p>Your profile is securely stored with 112 integration</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function editContacts() {
+            alert('Opening contact editor...\n\nIn production, this would open a form to add/edit emergency contacts.');
+        }
+
+        function toggleSetting(setting) {
+            alert(`Toggling ${setting} setting...\n\nIn production, this would update your preferences.`);
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userPhone');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Load user data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const phone = localStorage.getItem('userPhone');
+            if (phone) {
+                document.getElementById('userPhone').textContent = phone;
+            }
+        });
+    </script>
+</body>
+</html>

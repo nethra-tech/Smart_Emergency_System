@@ -1,0 +1,279 @@
+/* Login Page Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    border-radius: 25px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.back-btn-small {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-btn-small:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.title {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.title i {
+    color: #3498db;
+    margin-right: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #aaa;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+/* Input Cards */
+.input-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.input-card:focus-within {
+    border-color: #3498db;
+    box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+}
+
+.input-card i {
+    color: #aaa;
+    font-size: 18px;
+}
+
+.input-card input {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    width: 100%;
+    outline: none;
+}
+
+.input-card input::placeholder {
+    color: #888;
+}
+
+/* Login Action Button */
+.login-action {
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    width: 100%;
+}
+
+.login-action:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4);
+}
+
+.login-action h3 {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.login-action p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+}
+
+/* OTP Styles */
+.otp-info {
+    text-align: center;
+    color: #aaa;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.otp-info span {
+    color: #3498db;
+    font-weight: bold;
+}
+
+.otp-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.otp-input {
+    width: 50px;
+    height: 60px;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.otp-input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
+    outline: none;
+}
+
+/* Resend Link */
+.resend-link {
+    text-align: center;
+    margin-top: 15px;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.resend-link:hover {
+    color: #3498db;
+}
+
+.resend-link i {
+    margin-right: 5px;
+}
+
+/* Emergency Link */
+.emergency-link {
+    text-align: center;
+    margin-top: 25px;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.emergency-link i {
+    color: #e74c3c;
+}
+
+.emergency-link a {
+    color: #e74c3c;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.emergency-link a:hover {
+    text-decoration: underline;
+}
+
+/* Reference Badge */
+.ref-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+    color: #888;
+    font-size: 12px;
+}
+
+.ref-badge img {
+    height: 25px;
+    filter: brightness(0.8);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 30px 20px;
+    }
+    
+    .title {
+        font-size: 24px;
+    }
+    
+    .otp-input {
+        width: 45px;
+        height: 55px;
+        font-size: 20px;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-card {
+    animation: fadeIn 0.5s ease;
+}
+
+/* Error State */
+.input-card.error {
+    border-color: #e74c3c;
+}
+
+.input-card.error input {
+    color: #e74c3c;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.input-card.error + .error-message {
+    display: block;
+}

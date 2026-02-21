@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Smart Emergency Response</title>
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <button class="back-btn" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <h1><i class="fas fa-shield-alt"></i> Emergency Dashboard</h1>
+            <div class="user-profile" onclick="goToProfile()">
+                <i class="fas fa-user"></i>
+            </div>
+        </header>
+
+        <!-- Quick SOS Button -->
+        <div class="sos-container">
+            <button class="sos-main-btn" onclick="triggerSOS()">
+                SOS
+            </button>
+            <p>Tap for immediate emergency help</p>
+        </div>
+
+        <!-- Service Grid -->
+        <div class="services-grid">
+            <!-- Emergency Contacts -->
+            <div class="service-card" onclick="openEmergencyContacts()">
+                <i class="fas fa-phone-alt"></i>
+                <h3>Emergency Contacts</h3>
+                <p>Quick dial important numbers</p>
+            </div>
+
+            <!-- Track Me -->
+            <div class="service-card" onclick="goToTrackMe()">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>Track Me</h3>
+                <p>Share live location</p>
+            </div>
+
+            <!-- About Us -->
+            <div class="service-card" onclick="goToAboutUs()">
+                <i class="fas fa-info-circle"></i>
+                <h3>About Us</h3>
+                <p>Learn about our mission</p>
+            </div>
+
+            <!-- Chat with Us -->
+            <div class="service-card" onclick="goToChat()">
+                <i class="fas fa-comments"></i>
+                <h3>Chat with Us</h3>
+                <p>Get instant support</p>
+            </div>
+
+            <!-- SOS Without Signal -->
+            <div class="service-card" onclick="sosNoSignal()">
+                <i class="fas fa-wifi"></i>
+                <h3>SOS Without Signal</h3>
+                <p>Emergency alerts offline</p>
+            </div>
+
+            <!-- Learn Emergency Skills -->
+            <div class="service-card" onclick="goToLearn()">
+                <i class="fas fa-video"></i>
+                <h3>Learn Emergency Skills</h3>
+                <p>CPR, First Aid & more</p>
+            </div>
+
+            <!-- User Profile -->
+            <div class="service-card" onclick="goToProfile()">
+                <i class="fas fa-user"></i>
+                <h3>My Profile</h3>
+                <p>Manage your account</p>
+            </div>
+
+            <!-- Family Contacts -->
+            <div class="service-card" onclick="familyContacts()">
+                <i class="fas fa-users"></i>
+                <h3>Family Contacts</h3>
+                <p>Manage emergency contacts</p>
+            </div>
+        </div>
+
+        <!-- 112 India Integration -->
+        <div class="integration-banner">
+            <img src="https://www.112india.gov.in/images/logo.png" alt="112 India">
+            <div>
+                <h4>112 Emergency Service</h4>
+                <p>Integrated with India's unified emergency number</p>
+            </div>
+        </div>
+
+        <!-- Offline Mode Indicator -->
+        <div class="offline-indicator" id="offlineIndicator">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Offline mode active - SOS still works via SMS</span>
+        </div>
+    </div>
+
+    <!-- Emergency Contacts Modal -->
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('contactModal')">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2><i class="fas fa-phone-alt"></i> Emergency Contacts</h2>
+            <div class="contact-list">
+                <div class="contact-item" onclick="callNumber('100')">
+                    <span class="icon">🚔</span>
+                    <span class="name">Police</span>
+                    <span class="number">100</span>
+                </div>
+                <div class="contact-item" onclick="callNumber('101')">
+                    <span class="icon">🚒</span>
+                    <span class="name">Fire Brigade</span>
+                    <span class="number">101</span>
+                </div>
+                <div class="contact-item" onclick="callNumber('102')">
+                    <span class="icon">🚑</span>
+                    <span class="name">Ambulance</span>
+                    <span class="number">102</span>
+                </div>
+                <div class="contact-item" onclick="callNumber('112')">
+                    <span class="icon">📞</span>
+                    <span class="name">Universal Emergency</span>
+                    <span class="number">112</span>
+                </div>
+                <div class="contact-item" onclick="callNumber('1091')">
+                    <span class="icon">👩</span>
+                    <span class="name">Women Helpline</span>
+                    <span class="number">1091</span>
+                </div>
+                <div class="contact-item" onclick="callNumber('1098')">
+                    <span class="icon">👶</span>
+                    <span class="name">Child Helpline</span>
+                    <span class="number">1098</span>
+                </div>
+                <div class="contact-item" onclick="callNumber('1070')">
+                    <span class="icon">🌪️</span>
+                    <span class="name">Disaster Management</span>
+                    <span class="number">1070</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOS No Signal Modal -->
+    <div class="modal" id="sosModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('sosModal')">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2><i class="fas fa-wifi"></i> SOS Without Signal</h2>
+            <p style="margin-bottom: 20px; line-height: 1.8;">
+                This feature allows you to send emergency SMS alerts even when there's no mobile network or internet connection.
+                Your location will be automatically included in the SMS.
+            </p>
+            <div class="info-card">
+                <h4><i class="fas fa-info-circle"></i> How it works</h4>
+                <p>1. Your phone sends SMS via cell broadcast</p>
+                <p>2. Message reaches emergency services tower</p>
+                <p>3. Help is dispatched to your GPS location</p>
+            </div>
+            <button class="submit-emergency-btn" style="margin-top: 20px;" onclick="activateSOSNoSignal()">
+                <i class="fas fa-paper-plane"></i> Activate SMS SOS
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        function triggerSOS() {
+            window.location.href = 'emergency.html';
+        }
+
+        function openEmergencyContacts() {
+            document.getElementById('contactModal').style.display = 'flex';
+        }
+
+        function goToTrackMe() {
+            window.location.href = 'track.html';
+        }
+
+        function goToAboutUs() {
+            window.location.href = 'about.html';
+        }
+
+        function goToChat() {
+            window.location.href = 'chat.html';
+        }
+
+        function sosNoSignal() {
+            document.getElementById('sosModal').style.display = 'flex';
+        }
+
+        function goToLearn() {
+            window.location.href = 'learn.html';
+        }
+
+        function goToProfile() {
+            window.location.href = 'profile.html';
+        }
+
+        function familyContacts() {
+            alert('Opening family contacts manager...\n\nIn production, this would open a page to manage your emergency contacts.');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function callNumber(number) {
+            window.location.href = `tel:${number}`;
+        }
+
+        function activateSOSNoSignal() {
+            alert('SMS-based SOS activated!\n\nYour location will be sent to emergency services via cell broadcast.');
+        }
+
+        // Check online status
+        window.addEventListener('online', () => {
+            document.getElementById('offlineIndicator').style.display = 'none';
+        });
+
+        window.addEventListener('offline', () => {
+            document.getElementById('offlineIndicator').style.display = 'flex';
+        });
+
+        // Check initial status
+        if (!navigator.onLine) {
+            document.getElementById('offlineIndicator').style.display = 'flex';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Help | Smart Emergency Response</title>
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+    <button class="back-btn" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+
+    <div class="emergency-container">
+        <!-- Emergency Form -->
+        <div class="emergency-form" id="emergencyForm">
+            <h1 class="form-title">
+                <i class="fas fa-exclamation-triangle"></i> Emergency Help
+            </h1>
+            
+            <div class="question-card">
+                <label>1. What kind of emergency do you have?</label>
+                <select id="emergencyType" class="emergency-select">
+                    <option value="">Select emergency type...</option>
+                    <option value="medical">Medical Emergency</option>
+                    <option value="accident">Road Accident</option>
+                    <option value="cardiac">Cardiac Arrest</option>
+                    <option value="breathing">Breathing Problems</option>
+                    <option value="injury">Serious Injury</option>
+                    <option value="fire">Fire Emergency</option>
+                    <option value="pregnancy">Pregnancy Emergency</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="question-card">
+                <label>2. How many people need help?</label>
+                <select id="peopleCount" class="emergency-select">
+                    <option value="">Select number...</option>
+                    <option value="1">1 Person</option>
+                    <option value="2">2 People</option>
+                    <option value="3">3 People</option>
+                    <option value="4">4 People</option>
+                    <option value="5">5+ People</option>
+                </select>
+            </div>
+
+            <button class="submit-emergency-btn" onclick="submitEmergency()">
+                <i class="fas fa-paper-plane"></i> Get Help Now
+            </button>
+        </div>
+
+        <!-- Processing Section -->
+        <div class="processing-section" id="processingSection" style="display: none;">
+            <div class="location-status" id="locationStatus">
+                <i class="fas fa-map-marker-alt"></i>
+                <p id="locationText">Detecting your location...</p>
+            </div>
+            
+            <div class="map-container" id="map"></div>
+            
+            <!-- Hospital List -->
+            <div id="hospitalList" class="hospital-list" style="display: none;">
+                <h4 style="color: #64b5f6; margin-bottom: 15px;">
+                    <i class="fas fa-hospital"></i> Available Hospitals (Click to view route)
+                </h4>
+                <div id="hospitalButtons"></div>
+            </div>
+            
+            <div class="allocation-info" id="allocationInfo" style="display: none;">
+                <h3><i class="fas fa-check-circle"></i> Best Hospital Selected</h3>
+                
+                <div class="info-card">
+                    <h4><i class="fas fa-hospital"></i> Best Hospital</h4>
+                    <p id="hospitalName">Loading...</p>
+                    <p id="hospitalDetails"></p>
+                </div>
+
+                <div class="info-card">
+                    <h4><i class="fas fa-calculator"></i> Hospital Selection Formula</h4>
+                    <p style="font-size: 13px; color: rgba(255,255,255,0.7);">
+                        Score = Distance + Bed Availability + ICU Availability + Emergency Type Match + Severity
+                    </p>
+                    <p id="hospitalScore" style="color: #43a047; font-weight: bold;"></p>
+                </div>
+
+                <div class="info-card">
+                    <h4><i class="fas fa-ambulance"></i> Ambulance Assigned</h4>
+                    <p id="ambulanceDetails">Loading...</p>
+                </div>
+
+                <div class="info-card">
+                    <h4><i class="fas fa-route"></i> Route to Best Hospital</h4>
+                    <p id="routeDetails">Calculating...</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="quick-action-btn" onclick="goToChat()">
+                    <i class="fas fa-comments"></i> Chat
+                </button>
+                <button class="quick-action-btn" onclick="call100()">
+                    <i class="fas fa-phone"></i> 100 Dial
+                </button>
+                <button class="quick-action-btn" onclick="notifyFamily()">
+                    <i class="fas fa-users"></i> Notify Family
+                </button>
+            </div>
+
+            <div class="integration-banner">
+                <img src="https://www.112india.gov.in/images/logo.png" alt="112 India">
+                <div>
+                    <h4>112 Emergency Service</h4>
+                    <p>Your emergency has been shared with 112 India</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let userLat, userLng, emergencyMap;
+        let currentEmergencyType = '';
+        let currentPeopleCount = 0;
+        let bestHospital = null;
+        let routingControl = null;
+        let routeLines = [];
+        let hospitalMarkers = [];
+
+        // Hospital data
+        const hospitals = [
+  {
+    name: "Anaiyur Government Hospital",
+    lat: 9.9492,
+    lng: 78.0971,
+    beds: 40,
+    icu: 8,
+    emergency: true
+  },
+  {
+    name: "Madurai Medical College Hospital",
+    lat: 9.9256,
+    lng: 78.1382,
+    beds: 150,
+    icu: 30,
+    emergency: true
+  },
+  {
+    name: "LifeCare Private Hospital",
+    lat: 9.9568,
+    lng: 78.0835,
+    beds: 35,
+    icu: 10,
+    emergency: true
+  },
+  {
+    name: "District Headquarters Hospital",
+    lat: 9.9148,
+    lng: 78.1216,
+    beds: 90,
+    icu: 18,
+    emergency: true
+  }
+];
+
+
+        // Severity weights
+        const severityWeights = {
+            'cardiac': 30,
+            'breathing': 25,
+            'accident': 20,
+            'injury': 15,
+            'medical': 10,
+            'pregnancy': 10,
+            'fire': 15,
+            'other': 5
+        };
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function submitEmergency() {
+            currentEmergencyType = document.getElementById('emergencyType').value;
+            currentPeopleCount = document.getElementById('peopleCount').value;
+
+            if (!currentEmergencyType || !currentPeopleCount) {
+                alert('Please select both options!');
+                return;
+            }
+
+            document.getElementById('emergencyForm').style.display = 'none';
+            document.getElementById('processingSection').style.display = 'block';
+            getLocation();
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        userLat = position.coords.latitude;
+                        userLng = position.coords.longitude;
+                        document.getElementById('locationText').innerHTML = 
+                            '<i class="fas fa-check-circle"></i> Location detected: ' + 
+                            userLat.toFixed(4) + ', ' + userLng.toFixed(4);
+                        initMap();
+                        calculateBestHospital();
+                    },
+                    error => {
+                        document.getElementById('locationText').innerHTML = 
+                            '<i class="fas fa-exclamation-circle"></i> Using default location';
+                        userLat = 8.7139;
+                        userLng = 77.7567;
+                        initMap();
+                        calculateBestHospital();
+                    }
+                );
+            } else {
+                userLat = 8.7139;
+                userLng = 77.7567;
+                initMap();
+                calculateBestHospital();
+            }
+        }
+
+        function initMap() {
+            emergencyMap = L.map('map').setView([userLat, userLng], 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(emergencyMap);
+            
+            // User location marker (blue)
+            const userIcon = L.divIcon({
+                className: 'user-marker',
+                html: '<i class="fas fa-user" style="color: #1e88e5; font-size: 24px; background: white; border-radius: 50%; padding: 5px;"></i>',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+            });
+
+            L.marker([userLat, userLng], { icon: userIcon }).addTo(emergencyMap)
+                .bindPopup('<b>Your Location</b>').openPopup();
+        }
+
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLng/2) * Math.sin(dLng/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        function calculateBestHospital() {
+            const scores = hospitals.map(hospital => {
+                const distance = calculateDistance(userLat, userLng, hospital.lat, hospital.lng);
+                
+                // Formula: Distance + Bed Availability + ICU Availability + Emergency Type Match + Severity
+                const distanceScore = 50 - distance;
+                const bedScore = Math.min(hospital.beds / 2, 25);
+                const icuScore = hospital.icu * 1.5;
+                const typeMatch = hospital.emergency ? 20 : 0;
+                const severity = severityWeights[currentEmergencyType] || 10;
+
+                const totalScore = distanceScore + bedScore + icuScore + typeMatch + severity;
+
+                return {
+                    ...hospital,
+                    distance: distance.toFixed(2),
+                    distanceScore: distanceScore.toFixed(1),
+                    bedScore: bedScore.toFixed(1),
+                    icuScore: icuScore.toFixed(1),
+                    typeMatch,
+                    severity,
+                    totalScore: totalScore.toFixed(1)
+                };
+            });
+
+            // Sort by total score (descending)
+            scores.sort((a, b) => b.totalScore - a.totalScore);
+            bestHospital = scores[0];
+
+            // Show all hospitals on map
+            showAllHospitals(scores);
+
+            // Show allocation info
+            document.getElementById('allocationInfo').style.display = 'block';
+            document.getElementById('hospitalList').style.display = 'block';
+            
+            document.getElementById('hospitalName').innerHTML = '<strong>' + bestHospital.name + '</strong>';
+            document.getElementById('hospitalDetails').innerHTML = 
+                'Distance: ' + bestHospital.distance + ' km | ' +
+                'Beds: ' + bestHospital.beds + ' | ' +
+                'ICU: ' + bestHospital.icu + ' beds';
+            
+            document.getElementById('hospitalScore').innerHTML = 
+                'Total Score: ' + bestHospital.totalScore + ' (' +
+                'Distance: ' + bestHospital.distanceScore + ' + ' +
+                'Beds: ' + bestHospital.bedScore + ' + ' +
+                'ICU: ' + bestHospital.icuScore + ' + ' +
+                'Type Match: ' + bestHospital.typeMatch + ' + ' +
+                'Severity: ' + bestHospital.severity + ')';
+
+            const etaMinutes = parseInt(bestHospital.distance) * 3 + 5;
+            document.getElementById('ambulanceDetails').innerHTML = 
+                'Vehicle: AMB-2024-001<br>' +
+                'ETA: ' + etaMinutes + ' minutes<br>' +
+                'Driver: John (+91 98765 43210)';
+
+            document.getElementById('routeDetails').innerHTML = 
+                'Distance: ' + bestHospital.distance + ' km<br>' +
+                'ETA: ' + etaMinutes + ' minutes<br>' +
+                'Traffic: Clear';
+        }
+
+        function showAllHospitals(scoredHospitals) {
+            // Clear old hospital markers
+            hospitalMarkers.forEach(marker => emergencyMap.removeLayer(marker));
+            hospitalMarkers = [];
+
+            const hospitalButtons = document.getElementById('hospitalButtons');
+            hospitalButtons.innerHTML = '';
+
+            scoredHospitals.forEach((hospital, index) => {
+                const isBest = index === 0;
+                
+                // Custom icon - green for best, red for others
+                const markerColor = isBest ? '#43a047' : '#e53935';
+                const markerIcon = L.divIcon({
+                    className: 'hospital-marker',
+                    html: `<div style="
+                        width: 35px; 
+                        height: 35px; 
+                        background: ${markerColor}; 
+                        border-radius: 50%; 
+                        border: 3px solid white;
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center;
+                        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+                    ">
+                        <i class="fas fa-hospital" style="color: white; font-size: 16px;"></i>
+                    </div>`,
+                    iconSize: [35, 35],
+                    iconAnchor: [17, 17]
+                });
+
+                const marker = L.marker([hospital.lat, hospital.lng], { icon: markerIcon })
+                    .addTo(emergencyMap)
+                    .bindPopup(`
+                        <b style="color: ${markerColor};">${hospital.name}</b><br>
+                        Distance: ${hospital.distance} km<br>
+                        Score: ${hospital.totalScore}<br>
+                        ${isBest ? '<b style="color: #43a047;">★ BEST HOSPITAL</b>' : ''}
+                        <br><br>
+                        <button onclick="showRouteToHospital(${hospital.lat}, ${hospital.lng}, '${hospital.name}', ${isBest})" style="
+                            background: ${markerColor};
+                            color: white;
+                            border: none;
+                            padding: 8px 16px;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            width: 100%;
+                        ">Show Route</button>
+                    `);
+
+                // Store marker
+                hospitalMarkers.push(marker);
+
+                // Create button for each hospital
+                const button = document.createElement('div');
+                button.className = 'hospital-btn';
+                button.innerHTML = `
+                    <div class="hospital-btn-content" onclick="showRouteToHospital(${hospital.lat}, ${hospital.lng}, '${hospital.name}', ${isBest})">
+                        <div class="hospital-btn-icon" style="background: ${isBest ? '#43a047' : '#e53935'};">
+                            <i class="fas fa-hospital"></i>
+                        </div>
+                        <div class="hospital-btn-info">
+                            <strong>${hospital.name}</strong>
+                            <span>${hospital.distance} km away</span>
+                            ${isBest ? '<span class="best-badge">★ BEST</span>' : ''}
+                        </div>
+                        <div class="hospital-btn-route">
+                            <i class="fas fa-route"></i> Route
+                        </div>
+                    </div>
+                `;
+                hospitalButtons.appendChild(button);
+            });
+
+            // Add CSS for hospital buttons
+            const style = document.createElement('style');
+            style.textContent = `
+                .hospital-list {
+                    background: rgba(255,255,255,0.1);
+                    padding: 20px;
+                    border-radius: 15px;
+                    margin-bottom: 20px;
+                }
+                .hospital-btn {
+                    background: rgba(255,255,255,0.05);
+                    border-radius: 12px;
+                    margin-bottom: 10px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    border: 1px solid rgba(255,255,255,0.1);
+                }
+                .hospital-btn:hover {
+                    background: rgba(255,255,255,0.1);
+                    transform: translateX(5px);
+                }
+                .hospital-btn-content {
+                    display: flex;
+                    align-items: center;
+                    padding: 15px;
+                    gap: 15px;
+                }
+                .hospital-btn-icon {
+                    width: 45px;
+                    height: 45px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                }
+                .hospital-btn-icon i {
+                    color: white;
+                    font-size: 18px;
+                }
+                .hospital-btn-info {
+                    flex: 1;
+                }
+                .hospital-btn-info strong {
+                    display: block;
+                    margin-bottom: 5px;
+                }
+                .hospital-btn-info span {
+                    font-size: 13px;
+                    color: rgba(255,255,255,0.6);
+                }
+                .best-badge {
+                    background: #43a047;
+                    color: white;
+                    padding: 2px 8px;
+                    border-radius: 10px;
+                    font-size: 11px;
+                    margin-left: 10px;
+                }
+                .hospital-btn-route {
+                    background: rgba(255,255,255,0.1);
+                    padding: 10px 15px;
+                    border-radius: 8px;
+                    font-size: 13px;
+                    color: #64b5f6;
+                }
+                .hospital-btn-route i {
+                    margin-right: 5px;
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Fit bounds to show ALL hospitals
+            const bounds = L.latLngBounds([[userLat, userLng]]);
+            scoredHospitals.forEach(h => bounds.extend([h.lat, h.lng]));
+            emergencyMap.fitBounds(bounds.pad(0.2));
+        }
+
+        function showRouteToHospital(lat, lng, name, isBest) {
+            // Remove old routing control
+            if (routingControl) {
+                emergencyMap.removeControl(routingControl);
+                routingControl = null;
+            }
+
+            // Remove old route lines
+            routeLines.forEach(line => emergencyMap.removeLayer(line));
+            routeLines = [];
+
+            // Choose route color
+            const routeColor = isBest ? '#43a047' : '#e53935';
+
+            // DOTTED route line
+            const routeLine = L.polyline(
+                [[userLat, userLng], [lat, lng]],
+                {
+                    color: routeColor,
+                    weight: 5,
+                    opacity: 0.9,
+                    dashArray: '10, 10'
+                }
+            ).addTo(emergencyMap);
+
+            routeLines.push(routeLine);
+
+            // Auto zoom to show route
+            emergencyMap.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
+
+            // Update info panel
+            document.getElementById('hospitalName').innerHTML = 
+                `<strong style="color:${routeColor}">${name}</strong>`;
+        }
+
+        function goToChat() {
+            window.location.href = 'chat.html';
+        }
+
+        function call100() {
+            window.location.href = 'tel:100';
+        }
+
+        function notifyFamily() {
+            alert('Family members will be notified via SMS and app notification!');
+        }
+    </script>
+</body>
+</html>
