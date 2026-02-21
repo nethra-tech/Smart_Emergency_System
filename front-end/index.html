@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Emergency Response System</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🚑 Smart Emergency Response System</h1>
+
+<button onclick="getLocation()">📍 Get My Location</button>
+<p id="location"></p>
+<p id="eta"></p>
+
+
+<button onclick="findHospitals()">🏥 Find Nearby Hospitals</button>
+<button class="sos-btn" onclick="sendSOS()">🚨 EMERGENCY SOS</button>
+<button onclick="highlightBestHospital()">🟢 Show Best Hospital</button>
+
+
+
+<div id="map"></div>
+<div id="hospitalList"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
