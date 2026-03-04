@@ -67,7 +67,7 @@
             </button>
         </div>
     </div>
-
+   
     <script>
         function goBack() {
             window.history.back();
@@ -77,26 +77,41 @@
             window.location.href = "emergency.html";
         }
 
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (message) {
-                addMessage(message, 'user');
-                input.value = '';
-                setTimeout(() => {
-                    addMessage("Thank you for your message. An emergency response team has been notified if needed. How else can I assist you?", 'bot');
-                }, 1000);
-            }
-        }
+        async function sendMessage() {
+
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    // Add user message
+    addMessage(message, 'user');
+    input.value = '';
+
+    try {
+
+        const response = await fetch("http://127.0.0.1:5000/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+
+        // Add Gemini reply
+        addMessage(data.reply, 'bot');
+
+    } catch (error) {
+        addMessage("Server error. Please try again.", 'bot');
+    }
+}
 
         function sendQuickReply(message) {
-            addMessage(message, 'user');
-            setTimeout(() => {
-                addMessage("I understand you need " + message.toLowerCase() + ". Let me help you with that.", 'bot');
-            }, 1000);
-        }
-
+    document.getElementById("chatInput").value = message;
+    sendMessage();
+}
         function addMessage(text, type) {
             const messagesContainer = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
@@ -136,6 +151,7 @@
         function startVoice() {
             alert('Voice input would start here (requires browser API support)');
         }
+        
     </script>
 
     <style>
