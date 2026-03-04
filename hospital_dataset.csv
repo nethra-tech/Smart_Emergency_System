@@ -1,0 +1,11 @@
+hospital_id,hospital_name,address,city,latitude,longitude,contact_number,total_beds,available_icu_beds,available_ventilators,available_emergency_beds,pediatric_beds_available,maternity_beds_available,cardiac_emergency,burn_unit,ambulance_available,blood_bank_available,average_wait_time_minutes,emergency_status,distance_from_user_km,estimated_travel_time_minutes,hospital_rating
+1,Easvara_Hospital ,"Near,Old Post Office Road, 1-B, Perumal Koil St,",Madurai,9.933355828388585, 78.13625718177926,919876543210,200,5,3,10,4,6,Yes,No,Yes,Yes,12,Open,4.5,10,4.3
+2,KRS_NULIFE_Hospitals_PvtLtd ,"1st Cross, Anna Salai, Anna Nagar",Madurai,9.925828192470602, 78.14284630048083,919812345678,150,0,1,5,2,3,Yes,Yes,No,Yes,25,Full,6.2,18,3.9
+3,Rahavendar_hospital ,"Kuruvikaran Salai, Kamarajar Salai", Madurai,9.918218968639414, 78.14018554906957,919923456789,180,3,2,8,5,4,No,No,Yes,Yes,15,Open,3.1,9,4.1
+4,Saravana_Multi-Speciality_Hospital ,"Pattukottai Kalyana Sundaram St, Poonthamalli Nagar", Madurai,9.942428659573709, 78.12554673855871,919834567890,220,8,5,15,6,7,Yes,Yes,Yes,Yes,8,Critical,2.4,6,4.6
+5,Meenakshi_Mission_Hospital & Research_Centre ,"Lake Area, Melur Main Rd," ,Madurai,9.949612300385539, 78.16232992372393,919745678901,120,2,1,6,3,2,Yes,No,Yes,No,20,Open,7.8,22,3.8
+6,Goverment_Rajaji_Hospital ,"Alwarpuram",Madurai,9.930393641897009, 78.13031501964073,919656789012,250,10,7,20,8,9,Yes,Yes,Yes,Yes,5,Open,1.5,4,4.8
+7,NTC & Multispeciality_Hospitals ," Thathaneri Main Rd, near ESI Hospital, Vaithiyanathapuram",Madurai,9.943378084144312, 78.10166059303322,919567890123,140,1,2,4,2,3,No,Yes,No,Yes,30,Full,8.3,25,3.5
+8,Apollo_Care_Center ,"80 Feet Rd, Deputy Collector Colony, KK Nagar ",Madurai,9.930055462641773, 78.14859695675675,919478901234,300,12,8,25,10,12,Yes,Yes,Yes,Yes,7,Open,2.9,8,4.9
+9,Taj_Hospital ," W 1st Cross St,  Mellur, KK Nagar", Madurai,9.936565351909074, 78.14267463909945,919389012345,190,4,3,9,4,5,Yes,No,Yes,Yes,18,Open,5.6,14,4.0
+10,AVSS_HOSPITALS ,"32-A, Kuruvikaran Salai", Madurai,9.919487184885936, 78.13898391939998,919290123456,100,0,0,3,1,2,No,No,No,No,35,Critical,10.2,30,3.2
