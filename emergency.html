@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="app.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 </head>
 <body>
     <button class="back-btn" onclick="goBack()">
@@ -119,52 +120,52 @@
             </div>
         </div>
     </div>
-
+    
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        let userLat, userLng, emergencyMap;
-        let currentEmergencyType = '';
-        let currentPeopleCount = 0;
-        let bestHospital = null;
-        let routingControl = null;
-        let routeLines = [];
-        let hospitalMarkers = [];
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<!-- PapaParse Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
-        // Hospital data
-        const hospitals = [
-  {
-    name: "Anaiyur Government Hospital",
-    lat: 9.9492,
-    lng: 78.0971,
-    beds: 40,
-    icu: 8,
-    emergency: true
-  },
-  {
-    name: "Madurai Medical College Hospital",
-    lat: 9.9256,
-    lng: 78.1382,
-    beds: 150,
-    icu: 30,
-    emergency: true
-  },
-  {
-    name: "LifeCare Private Hospital",
-    lat: 9.9568,
-    lng: 78.0835,
-    beds: 35,
-    icu: 10,
-    emergency: true
-  },
-  {
-    name: "District Headquarters Hospital",
-    lat: 9.9148,
-    lng: 78.1216,
-    beds: 90,
-    icu: 18,
-    emergency: true
-  }
-];
+<script>
+// Global Variables
+let hospitals = [];
+let userLat, userLng;
+let currentEmergencyType, currentPeopleCount;
+let bestHospital;
+let emergencyMap;
+let hospitalMarkers = [];
+let routingControl = null;
+let routeLines = [];
+
+// Load CSV file
+function loadHospitalsFromCSV() {
+    Papa.parse("hospital_dataset.csv", {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+
+            hospitals = results.data.map(h => ({
+                name: h.hospital_name,
+                lat: parseFloat(h.latitude),
+                lng: parseFloat(h.longitude),
+                beds: parseInt(h.total_beds),
+                icu: parseInt(h.available_icu_beds),
+                emergency: h.emergency_status === "Open"
+            }));
+
+            console.log("Hospitals Loaded Successfully:", hospitals);
+        },
+        error: function(err) {
+            console.error("Error loading CSV:", err);
+        }
+    });
+}
+
+// Use DOMContentLoaded instead of window.onload (safer)
+document.addEventListener("DOMContentLoaded", function () {
+    loadHospitalsFromCSV();
+});
 
 
         // Severity weights
@@ -473,28 +474,31 @@
 
         function showRouteToHospital(lat, lng, name, isBest) {
             // Remove old routing control
-            if (routingControl) {
-                emergencyMap.removeControl(routingControl);
-                routingControl = null;
-            }
+           if (routingControl) {
+    emergencyMap.removeControl(routingControl);
+}
 
-            // Remove old route lines
-            routeLines.forEach(line => emergencyMap.removeLayer(line));
-            routeLines = [];
+routingControl = L.Routing.control({
+    waypoints: [
+        L.latLng(userLat, userLng),
+        L.latLng(lat, lng)
+    ],
+    routeWhileDragging: false,
+    show: false,
+    addWaypoints: false,
+    draggableWaypoints: false,
+    createMarker: function() { return null; }, // removes default markers
 
-            // Choose route color
-            const routeColor = isBest ? '#43a047' : '#e53935';
+    lineOptions: {
+        styles: [{
+            color: isBest ? '#43a047' : '#e53935',
+            weight: 6,
+            opacity: 0.9,
+            dashArray: '5,10'   // 🔥 THIS MAKES IT DOTTED
+        }]
+    }
 
-            // DOTTED route line
-            const routeLine = L.polyline(
-                [[userLat, userLng], [lat, lng]],
-                {
-                    color: routeColor,
-                    weight: 5,
-                    opacity: 0.9,
-                    dashArray: '10, 10'
-                }
-            ).addTo(emergencyMap);
+}).addTo(emergencyMap);
 
             routeLines.push(routeLine);
 
@@ -509,6 +513,8 @@
         function goToChat() {
             window.location.href = 'chat.html';
         }
+
+        
 
         function call100() {
             window.location.href = 'tel:100';
