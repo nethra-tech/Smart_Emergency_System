@@ -21,13 +21,15 @@
             </div>
         </header>
 
-        <!-- Quick SOS Button -->
-        <div class="sos-container">
-            <button class="sos-main-btn" onclick="triggerSOS()">
-                SOS
-            </button>
-            <p>Tap for immediate emergency help</p>
-        </div>
+<!-- Quick SOS Button -->
+<div class="sos-container">
+    <button id="sosBtn" class="sos-main-btn" onclick="triggerSOS()">
+        🚨 SOS
+    </button>
+    <p>Tap for immediate emergency help</p>
+</div>
+
+<audio id="sosSound" src="audio.mp3" loop></audio>
 
         <!-- Service Grid -->
         <div class="services-grid">
@@ -174,18 +176,85 @@
         </div>
     </div>
 
+
     <script>
         function goBack() {
             window.location.href = 'index.html';
         }
 
-        function triggerSOS() {
-            window.location.href = 'emergency.html';
-        }
-
         function openEmergencyContacts() {
             document.getElementById('contactModal').style.display = 'flex';
         }
+
+
+
+
+let isSOSActive = false;
+
+function triggerSOS() {
+
+    const alarm = document.getElementById("sosSound");
+    const button = document.getElementById("sosBtn");
+
+    // 🔴 START SOS
+    if (!isSOSActive) {
+
+        alarm.currentTime = 0;
+        alarm.play().catch(error => {
+            console.log("Audio play failed:", error);
+        });
+
+        button.innerText = "STOP";
+        button.style.backgroundColor = "black";
+
+        isSOSActive = true;
+
+        // 📍 Get location
+        if (navigator.geolocation) {
+
+            navigator.geolocation.getCurrentPosition(function(position) {
+
+                let lat = position.coords.latitude;
+                let lon = position.coords.longitude;
+
+                let locationURL = `https://www.google.com/maps?q=${lat},${lon}`;
+
+                let message = `🚨 EMERGENCY ALERT 🚨
+I need immediate help!
+My Live Location:
+${locationURL}`;
+
+                let familyNumbers =
+                    JSON.parse(localStorage.getItem("familyNumbers")) || [];
+
+                familyNumbers.push("100");
+
+                let allNumbers = familyNumbers.join(",");
+
+                window.location.href =
+                    `sms:${allNumbers}?body=${encodeURIComponent(message)}`;
+
+            }, function(error){
+                alert("Location access denied. Please enable GPS.");
+            });
+
+        } else {
+            alert("Geolocation not supported.");
+        }
+    }
+
+    // ⚫ STOP SOS
+    else {
+
+        alarm.pause();
+        alarm.currentTime = 0;
+
+        button.innerText = "SOS";
+        button.style.backgroundColor = "red";
+
+        isSOSActive = false;
+    }
+}
 
         function goToTrackMe() {
             window.location.href = 'track.html';
